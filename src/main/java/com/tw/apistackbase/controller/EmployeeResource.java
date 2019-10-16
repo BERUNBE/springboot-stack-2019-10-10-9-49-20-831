@@ -35,7 +35,7 @@ public class EmployeeResource {
         employee.setName(updatedEmployee.getName());
         employee.setAge(updatedEmployee.getAge());
         employee.setGender(updatedEmployee.getGender());
-        return ResponseEntity.ok("Updated employee " + updatedEmployee.getName());
+        return ResponseEntity.ok("Updated employee " + employee.getName());
     }
 
     @DeleteMapping(path = "/{employeeId}")
