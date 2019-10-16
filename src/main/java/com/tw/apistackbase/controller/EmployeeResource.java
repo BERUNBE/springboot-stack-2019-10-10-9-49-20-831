@@ -32,6 +32,9 @@ public class EmployeeResource {
     @PutMapping(path = "/{employeeId}")
     public ResponseEntity<String> updateEmployee(@PathVariable String employeeId, @RequestBody Employee updatedEmployee) {
         Employee employee = getEmployeeWithMatchingId(employeeId);
+        if (employee == null) {
+            return ResponseEntity.badRequest().body("Employee with ID " + employeeId + " not found.");
+        }
         employee.setName(updatedEmployee.getName());
         employee.setAge(updatedEmployee.getAge());
         employee.setGender(updatedEmployee.getGender());
@@ -41,6 +44,9 @@ public class EmployeeResource {
     @DeleteMapping(path = "/{employeeId}")
     public ResponseEntity<String> deleteEmployee(@PathVariable String employeeId) {
         Employee employee = getEmployeeWithMatchingId(employeeId);
+        if (employee == null) {
+            return ResponseEntity.badRequest().body("Employee with ID " + employeeId + " not found.");
+        }
         String name = employee.getName();
         employeeList.remove(employee);
         return ResponseEntity.ok("Deleted employee " + name);
@@ -50,6 +56,6 @@ public class EmployeeResource {
         return employeeList.stream()
                 .filter(employee1 -> employee1.getId() == Integer.parseInt(employeeId))
                 .findFirst()
-                .get();
+                .orElse(null);
     }
 }
