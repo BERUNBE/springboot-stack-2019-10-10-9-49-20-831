@@ -8,24 +8,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping
+@RequestMapping("/employees")
 public class EmployeeResource {
 
     private List<Employee> employeeList = new ArrayList<>();
 
-    @PostMapping(path = "/employee", consumes = {"application/json"}, produces = {"application/json"})
-    public ResponseEntity<String> createEmployee(@RequestBody Employee employee) {
-        employeeList.add(employee);
-        return ResponseEntity.ok("Created employee " + employee.getName());
+    @PostMapping(consumes = {"application/json"}, produces = {"application/json"})
+    public List<Employee> createEmployees(@RequestBody List<Employee> employeeList) {
+        this.employeeList.addAll(employeeList);
+        return employeeList;
     }
 
-    @GetMapping(path = "/employees", produces = {"application/json"})
+    @GetMapping(path = "/{employeeId}", produces = {"application/json"})
+    public Employee getEmployee(@PathVariable String employeeId) {
+        return getEmployeeWithMatchingId(employeeId);
+    }
+
+    @GetMapping(produces = {"application/json"})
     public List<Employee> getEmployees() {
         return employeeList;
     }
 
-    @PutMapping("/{employeeId}")
-    public ResponseEntity<String> updateUser(@PathVariable String employeeId, @RequestBody Employee updatedEmployee) {
+    @PutMapping(path = "/{employeeId}")
+    public ResponseEntity<String> updateEmployee(@PathVariable String employeeId, @RequestBody Employee updatedEmployee) {
         Employee employee = getEmployeeWithMatchingId(employeeId);
         employee.setName(updatedEmployee.getName());
         employee.setAge(updatedEmployee.getAge());
@@ -33,8 +38,8 @@ public class EmployeeResource {
         return ResponseEntity.ok("Updated employee " + updatedEmployee.getName());
     }
 
-    @DeleteMapping("/{employeeId}")
-    public ResponseEntity<String> deleteUser(@PathVariable String employeeId) {
+    @DeleteMapping(path = "/{employeeId}")
+    public ResponseEntity<String> deleteEmployee(@PathVariable String employeeId) {
         Employee employee = getEmployeeWithMatchingId(employeeId);
         String name = employee.getName();
         employeeList.remove(employee);
